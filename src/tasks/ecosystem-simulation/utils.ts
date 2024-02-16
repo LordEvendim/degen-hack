@@ -1,0 +1,45 @@
+import { IEntity } from "./entity"
+
+export interface Rectangle {
+    minX: number
+    maxX: number
+    minY: number
+    maxY: number
+}
+
+export interface Position {
+    x: number
+    y: number
+}
+
+export function distance(pos1: Position, pos2: Position): number {
+    return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y);
+}
+
+export function direction(from: Position, to: Position): {x: number, y: number} {
+    let dir = {
+        x: 0,
+        y: 0
+    }
+    if (Math.abs(to.x - from.x) > Math.abs(to.y - from.y)) {
+        dir.x = Math.abs(to.x - from.x) === 0 ? 0 : (to.x - from.x) / Math.abs(to.x - from.x)
+    } else {
+        dir.y = Math.abs(to.y - from.y) === 0 ? 0 : (to.y - from.y) / Math.abs(to.y - from.y)
+    }
+    return dir
+}
+
+export function findEntitiesAtPosition(entities: IEntity[], pos: Position) {
+    let list: IEntity[] = []
+    entities.forEach(entity => {
+        if (entity.pos.x === pos.x && entity.pos.y === pos.y)
+            list.push(entity);
+    });
+    return list;
+}
+
+export function getRandomPosition(bounds: Rectangle): Position {
+    const x = Math.floor(Math.random() * (bounds.maxX - bounds.minX) + bounds.minX);
+    const y = Math.floor(Math.random() * (bounds.maxY - bounds.minY) + bounds.minY);
+    return { x, y };
+}
