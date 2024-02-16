@@ -1,0 +1,26 @@
+{
+  "name": "simgolem-simulation",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsx ./src/requestor.ts",
+    "start:node": "node ./dist/requestor.js",
+    "compile": "tsc",
+    "image:build": "docker build --progress=plain -t lordevendim/simgolem-simulation:latest .",
+    "image:publish": "gvmkit-build --push lordevendim/simgolem-simulation:latest",
+    "build:tsup": "tsup src/requestor.ts",
+    "build": "yarn run compile && yarn run image:build && yarn run image:publish"
+  },
+  "dependencies": {
+    "@golem-sdk/golem-js": "^2.0.1",
+    "commander": "^12.0.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@golem-sdk/gvmkit-build": "^0.3.12",
+    "@types/node": "^20.11.19",
+    "dotenv": "^16.4.4",
+    "tsup": "^8.0.2"
+  }
+}
