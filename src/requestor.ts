@@ -47,18 +47,23 @@ program
     for (let i = 0; i < options.tasksCount; i++) {
       runningTasks.push(
         executor.run(async (ctx) => {
-          const result = await ctx.run("/usr/local/bin/node", [
-            "/golem/work/task.js",
-            // options.fibonacciNumber.toString(),
-          ]);
+          const result = await ctx
+            .beginBatch()
+            .run("/usr/local/bin/node", [
+              "/golem/work/task.js",
+              // options.fibonacciNumber.toString(),
+            ])
+            .run("ls -l /golem/work/out/gif/")
+            .downloadFile(
+              "/golem/work/out/gif/simulation.gif",
+              `./gen/simulation${i}.gif`
+            )
+            .end();
 
-          ctx.downloadFile(
-            "/golem/work/out/gif/simulation.gif",
-            `./gen/simulation${i}.gif`
-          );
-          console.log(result.stdout);
-          fs.writeFileSync("./output.txt", result.stdout.toString().trim());
-          return result.stdout?.toString().trim();
+          for (let i = 0; i < result.length; i++) {
+            console.log(result[i]);
+          }
+          return result[0].stdout?.toString().trim();
         })
       );
     }
