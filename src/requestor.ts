@@ -8,12 +8,16 @@ type MainOptions = {
   paymentDriver: string;
   paymentNetwork: string;
   tasksCount: number;
-  fibonacciNumber: number;
+  steps: number;
+  entitySize: number;
+  frameDelay: number;
 };
 
 program
-  // .option("-n, --fibonacci-number <n>", "fibonacci number", "1")
-  .option("-c, --tasks-count <c>", "tasks count", "1")
+  .option("-n, --steps <number>", "simulations steps", "100")
+  .option("-ec, --entity-size <number>", "Size of an entity", "10")
+  .option("-fd, --frame-delay <number>", "Delay between frames", "100")
+  .option("-c, --tasks-count <number>", "tasks count", "3")
   .option(
     "--subnet-tag <subnet>",
     "set subnet name, for example 'public'",
@@ -40,7 +44,7 @@ program
       logger: pinoLogger({
         level: "debug",
       }),
-      taskTimeout: 10 * 60 * 1000,
+      taskTimeout: 30 * 60 * 1000,
     });
 
     const runningTasks: Promise<string | undefined>[] = [];
@@ -51,9 +55,10 @@ program
             .beginBatch()
             .run("/usr/local/bin/node", [
               "/golem/work/task.js",
-              // options.fibonacciNumber.toString(),
+              options.steps.toString(),
+              options.entitySize.toString(),
+              options.frameDelay.toString(),
             ])
-            .run("ls -l /golem/work/out/gif/")
             .downloadFile(
               "/golem/work/out/gif/simulation.gif",
               `./gen/simulation${i}.gif`
@@ -63,7 +68,7 @@ program
           for (let i = 0; i < result.length; i++) {
             console.log(result[i]);
           }
-          return result[0].stdout?.toString().trim();
+          return undefined;
         })
       );
     }

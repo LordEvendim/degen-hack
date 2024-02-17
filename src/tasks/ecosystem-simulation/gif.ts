@@ -1,6 +1,7 @@
 import fs from "fs";
 import GifEncoder from "gif-encoder";
 import png from "png-js";
+import { FRAME_DELAY } from "./constants";
 
 const decodePNG = async (path: string): Promise<number[]> => {
   return await new Promise((resolve) => {
@@ -22,7 +23,7 @@ export const generateGif = async (
   let file = fs.createWriteStream("./out/gif/simulation.gif");
 
   gif.pipe(file);
-  gif.setDelay(200);
+  gif.setDelay(FRAME_DELAY);
   gif.writeHeader();
 
   for (let i = 1; i <= count; i++) {
