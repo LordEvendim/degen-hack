@@ -10,7 +10,7 @@
     "image:publish": "gvmkit-build --push lordevendim/simgolem-simulation:latest",
     "build:executor": "tsup src/requestor.ts",
     "build:task": "tsup src/task.ts",
-    "publish": "yarn run compile && yarn run image:build && yarn run image:publish",
+    "golem:push": "yarn build:task && yarn run image:build && yarn run image:publish",
     "generate": "yarn build:task && node ./dist/task.js"
   },
   "dependencies": {
