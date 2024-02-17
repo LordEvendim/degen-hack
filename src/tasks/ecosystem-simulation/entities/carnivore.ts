@@ -1,24 +1,16 @@
 import { direction, distance, Position } from "../utils";
-import { EntityTypes, IEntity } from "./entity";
+import {BaseEntity, EntityTypes, IEntity} from "./entity";
 import { Herbivore } from "./herbivore";
 import { Plant } from "./plant";
 
-export class Carnivore implements IEntity {
+export class Carnivore extends BaseEntity {
   START_ENERGY = 60;
 
-  pos: Position;
-  energy: number;
-  age: number;
-  alive: boolean;
-  type: EntityTypes;
-
   constructor(pos: Position) {
-    this.pos = pos;
-    this.age = 0;
-    this.alive = true;
+    super("Carnivore", pos);
     this.energy = this.START_ENERGY;
-    this.type = "Carnivore";
   }
+
   computeNextMove(entities: IEntity[], nearbyGrid: IEntity[][]): void {
     let closestHerbivore: Herbivore | undefined;
     entities.forEach((element) => {

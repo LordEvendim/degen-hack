@@ -1,23 +1,14 @@
 import { direction, distance, Position } from "../utils";
-import { EntityTypes, IEntity } from "./entity";
+import {BaseEntity, EntityTypes, IEntity} from "./entity";
 import { Plant } from "./plant";
 import { Carnivore } from "./carnivore";
 
-export class Herbivore implements IEntity {
+export class Herbivore extends BaseEntity {
   START_ENERGY = 50;
 
-  pos: Position;
-  energy: number;
-  age: number;
-  alive: boolean;
-  type: EntityTypes;
-
   constructor(pos: Position) {
-    this.pos = pos;
-    this.age = 0;
-    this.alive = true;
+    super("Herbivore", pos);
     this.energy = this.START_ENERGY;
-    this.type = "Herbivore";
   }
 
   computeNextMove(entities: IEntity[], nearbyGrid: IEntity[][]): void {
