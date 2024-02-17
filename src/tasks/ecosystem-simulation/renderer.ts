@@ -28,19 +28,3 @@ export default function renderSimulationStep(simulation: Simulation): void {
             console.log(`there was an error writing ${e}`);
         });
 }
-
-const ffmpeg = require('fluent-ffmpeg');
-
-export function createVideoFromImages(fps) {
-    ffmpeg()
-        .addInput(`./out/%d.png`)
-        .on('end', () => {
-            console.log('Video created successfully!');
-        })
-        .on('error', (err) => {
-            console.error('Error:', err);
-        })
-        .inputFPS(fps)
-        .output('./animation.mp4')
-        .run();
-}

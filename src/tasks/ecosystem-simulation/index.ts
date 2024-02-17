@@ -5,8 +5,8 @@ import {
   IMAGE_WIDTH,
   SIMULATION_STEPS,
 } from "./constants";
-import renderSimulationStep, { createVideoFromImages } from "./renderer";
 import { generateRandomEntities } from "./utils";
+import renderSimulationStep from "./renderer";
 
 const bounds = {
   minX: 0,
@@ -14,7 +14,7 @@ const bounds = {
   maxX: IMAGE_WIDTH / ENTITY_SIZE,
   maxY: IMAGE_HEIGHT / ENTITY_SIZE,
 };
-const entities = generateRandomEntities(bounds, 100, 10, 5);
+const entities = generateRandomEntities(bounds, 200, 30, 10);
 
 const simulation = new Simulation(undefined, bounds, entities);
 
@@ -23,4 +23,3 @@ for (let i = 0; i < SIMULATION_STEPS; ++i) {
   console.log(`step ${simulation.step}`);
   renderSimulationStep(simulation);
 }
-createVideoFromImages(5);
