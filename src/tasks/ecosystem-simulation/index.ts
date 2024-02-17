@@ -1,20 +1,18 @@
-import { Herbivore, Plant } from "./entity";
-import { Simulation } from "./simulation";
+import {Simulation} from "./simulation";
 import {ENTITY_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH} from "./constants";
-import renderSimulationStep from "./renderer";
+import renderSimulationStep, {createVideoFromImages} from "./renderer";
+import {generateRandomEntities} from "./utils";
 
-const entities = [
-    new Plant({x: 0, y: 0}),
-    new Herbivore({x: 2, y: 4}),
-    new Plant({x: 9, y: 5}),
-]
+const bounds = {minX: 0, minY: 0, maxX: IMAGE_WIDTH / ENTITY_SIZE, maxY: IMAGE_HEIGHT / ENTITY_SIZE};
+const entities = generateRandomEntities(bounds, 100, 10, 5);
 
 const simulation = new Simulation(
-    undefined, {minX: 0, minY: 0, maxX: IMAGE_WIDTH / ENTITY_SIZE, maxY: IMAGE_HEIGHT / ENTITY_SIZE}, entities
+    undefined, bounds, entities
 );
 
-for (let i = 0; i < 30; ++i) {
+for (let i = 0; i < 300; ++i) {
     simulation.makeStep();
     console.log(`step ${simulation.step}`);
     renderSimulationStep(simulation);
 }
+createVideoFromImages(5);

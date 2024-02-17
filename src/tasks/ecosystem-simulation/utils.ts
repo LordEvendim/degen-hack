@@ -1,4 +1,4 @@
-import { IEntity } from "./entity"
+import {Carnivore, Herbivore, IEntity, Plant} from "./entity"
 
 export interface Rectangle {
     minX: number
@@ -42,4 +42,50 @@ export function getRandomPosition(bounds: Rectangle): Position {
     const x = Math.floor(Math.random() * (bounds.maxX - bounds.minX) + bounds.minX);
     const y = Math.floor(Math.random() * (bounds.maxY - bounds.minY) + bounds.minY);
     return { x, y };
+}
+
+export function getUniquePosition(bounds: Rectangle, grid: (IEntity | undefined)[][]): Position {
+    let pos: Position;
+    do {
+        pos = getRandomPosition(bounds);
+    } while (grid[pos.x][pos.y] !== undefined);
+    return pos;
+}
+
+export function generateRandomEntities(bounds: Rectangle, plantsCount: number, herbivoreCount: number, carnivoreCount: number): IEntity[] {
+    let entities: IEntity[] = [];
+    let positionsSet = new Set(); // Set to store unique positions
+
+    function addEntity(entityType: any, bounds: Rectangle) {
+        let attempts = 0;
+        const maxAttempts = 10000; // Prevent infinite loops
+        while (attempts < maxAttempts) {
+            const randPos = getRandomPosition(bounds);
+            const posKey = `${randPos.x},${randPos.y}`; // Hash the position
+            if (!positionsSet.has(posKey)) {
+                positionsSet.add(posKey);
+                entities.push(new entityType(randPos));
+                break;
+            }
+            attempts++;
+        }
+    }
+
+    for (let i = 0; i < plantsCount; i++) {
+        addEntity(Plant, bounds);
+    }
+    for (let i = 0; i < herbivoreCount; i++) {
+        addEntity(Herbivore, bounds);
+    }
+    for (let i = 0; i < carnivoreCount; i++) {
+        addEntity(Carnivore, bounds);
+    }
+
+    // Randomize the order of the output array
+    for (let i = entities.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [entities[i], entities[j]] = [entities[j], entities[i]]; // Swap elements
+    }
+
+    return entities;
 }
