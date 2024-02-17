@@ -1,7 +1,8 @@
 import { Simulation } from "./simulation";
-import { make, encodePNGToStream } from "pureimage";
 import fs from "fs";
-import { ENTITY_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH } from "./constants";
+import {ENTITY_SIZE, FRAME_DELAY, IMAGE_HEIGHT, IMAGE_WIDTH} from "./constants";
+import {make} from "pureimage";
+import GifEncoder from "gif-encoder";
 
 const entityTypeToColor = {
   Plant: "green",
@@ -9,9 +10,16 @@ const entityTypeToColor = {
   Carnivore: "red",
 };
 
-export default async function renderSimulationStep(
-  simulation: Simulation
-): Promise<void> {
+let gif = new GifEncoder(1920, 1080, {
+  highWaterMark: 5 * 1024 * 1024, // 5MB
+});
+let file = fs.createWriteStream("./out/gif/simulation.gif");
+
+gif.pipe(file);
+gif.setDelay(FRAME_DELAY);
+gif.writeHeader();
+
+export async function renderSimulationStep(simulation: Simulation): Promise<void> {
   const img = make(IMAGE_WIDTH, IMAGE_HEIGHT);
   const ctx = img.getContext("2d");
   const step = simulation.step;
@@ -25,11 +33,11 @@ export default async function renderSimulationStep(
       ENTITY_SIZE
     );
   });
+  gif.addFrame(ctx.getImageData(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT).data);
+  console.log(`Added step ${step} to GIF`);
+}
 
-  try {
-    await encodePNGToStream(img, fs.createWriteStream(`./out/step${step}.png`));
-    console.log(`rendered step${step}.png`);
-  } catch (error) {
-    console.log(`there was an error writing ${error}`);
-  }
+export function finishGIF(): void {
+  gif.finish();
+  console.log('GIF creation completed.');
 }

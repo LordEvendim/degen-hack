@@ -20,6 +20,7 @@ export class Herbivore extends BaseEntity {
   }
 
   computeNextMove(entities: IEntity[], grid: IEntity[][]): void {
+    let energyUsed = 1;
     let closestPlant: Plant | undefined = findTypeInRadius(this.pos, grid, 25, "Plant") as Plant;
     if (closestPlant !== undefined) {
       this.target = closestPlant;
@@ -39,6 +40,11 @@ export class Herbivore extends BaseEntity {
       this.target !== undefined
         ? direction(this.pos, this.target.pos)
         : { x: 0, y: 0 };
+    if (distance(this.pos, this.target?.pos ?? this.pos) > 2 && this.energy > START_ENERGY_MAP["Herbivore"]) {
+      change.x *= 2;
+      change.y *= 2;
+      energyUsed = 3;
+    }
     const newPos = {
       x: this.pos.x + change.x,
       y: this.pos.y + change.y,
@@ -46,7 +52,7 @@ export class Herbivore extends BaseEntity {
     if (!(grid[newPos.x][newPos.y] instanceof Herbivore)) {
       this.pos = newPos;
     }
-    this.energy -= 1;
+    this.energy -= energyUsed;
     this.age += 1;
   }
 

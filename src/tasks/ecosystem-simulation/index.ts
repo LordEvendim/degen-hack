@@ -1,14 +1,7 @@
-import { Simulation } from "./simulation";
-import {
-  ENTITY_SIZE,
-  IMAGE_HEIGHT,
-  IMAGE_WIDTH,
-  SIMULATION_STEPS,
-  START_POPULATION,
-} from "./constants";
-import renderSimulationStep from "./renderer";
-import { generateRandomEntities } from "./utils";
-import { generateGif } from "./gif";
+import {Simulation} from "./simulation";
+import {ENTITY_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH, SIMULATION_STEPS, START_POPULATION,} from "./constants";
+import {finishGIF, renderSimulationStep} from "./renderer";
+import {generateRandomEntities} from "./utils";
 import fs from "fs";
 
 const bounds = {
@@ -38,7 +31,6 @@ const runSimulation = async (steps: number) => {
       break;
     }
   }
-  return simulation.step;
 };
 
 export const execute = async () => {
@@ -48,6 +40,6 @@ export const execute = async () => {
     fs.mkdirSync(dir, { recursive: true });
   }
 
-  const realSteps = await runSimulation(SIMULATION_STEPS);
-  await generateGif(`./out/`, "step", ".png", realSteps);
+  await runSimulation(SIMULATION_STEPS);
+  finishGIF();
 };

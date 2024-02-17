@@ -1,6 +1,5 @@
 import {
   direction,
-  distance,
   findAnyEntityOfType,
   findTypeInRadius,
   getRandomEmptySpaceNearPosition,
@@ -45,6 +44,9 @@ export class Carnivore extends BaseEntity {
     };
     if (!(grid[newPos.x][newPos.y] instanceof Carnivore)) {
       this.pos = newPos;
+    }
+    if (this.target === undefined) {
+      this.energy -= 10;
     }
     this.energy -= 1;
     this.age += 1;
