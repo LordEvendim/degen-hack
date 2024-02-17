@@ -15,7 +15,7 @@ const bounds = {
   maxX: IMAGE_WIDTH / ENTITY_SIZE,
   maxY: IMAGE_HEIGHT / ENTITY_SIZE,
 };
-const entities = generateRandomEntities(bounds, 100, 10, 5);
+const entities = generateRandomEntities(bounds, 30, 15, 10);
 
 const simulation = new Simulation(undefined, bounds, entities);
 
@@ -24,6 +24,10 @@ const runSimulation = async (steps: number) => {
     simulation.makeStep();
     console.log(`step ${simulation.step}`);
     await renderSimulationStep(simulation);
+    if (simulation.entities.length === 0) {
+      console.log("All entities are dead. Stopping simulation.");
+      break;
+    }
   }
 };
 

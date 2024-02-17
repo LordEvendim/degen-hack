@@ -9,13 +9,13 @@ export interface IEntity {
   age: number;
   alive: boolean;
 
-  computeNextMove(entities: IEntity[], nearbyGrid: IEntity[][]): void;
+  computeNextMove(entities: IEntity[], grid: IEntity[][]): void;
   interact(entity: IEntity): void;
   addEnergy(energy: number): void;
+  multiply(grid: IEntity[][]): IEntity | undefined;
 }
 
 export class BaseEntity implements IEntity {
-  START_ENERGY: number;
   type: EntityTypes;
   pos: Position;
   energy: number;
@@ -30,7 +30,7 @@ export class BaseEntity implements IEntity {
     this.alive = true;
   }
 
-  computeNextMove(entities: IEntity[], nearbyGrid: IEntity[][]): void {
+  computeNextMove(entities: IEntity[], grid: IEntity[][]): void {
     this.age += 1;
   }
 
@@ -40,6 +40,9 @@ export class BaseEntity implements IEntity {
 
   addEnergy(energy: number): void {
     this.energy += energy;
-    this.energy = Math.min(this.energy, this.START_ENERGY * 2);
   }
+
+    multiply(grid: IEntity[][]): IEntity | undefined {
+      return undefined;
+    }
 }

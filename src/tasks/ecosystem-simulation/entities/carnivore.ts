@@ -1,36 +1,49 @@
-import { direction, distance, Position } from "../utils";
-import {BaseEntity, EntityTypes, IEntity} from "./entity";
-import { Herbivore } from "./herbivore";
-import { Plant } from "./plant";
+import {
+  direction,
+  distance,
+  findAnyEntityOfType,
+  findTypeInRadius,
+  getRandomEmptySpaceNearPosition,
+  Position
+} from "../utils";
+import {BaseEntity, IEntity} from "./entity";
+import {Herbivore} from "./herbivore";
+import {Plant} from "./plant";
+import {REPRODUCTION_ENERGY, START_ENERGY_MAP} from "../constants";
 
 export class Carnivore extends BaseEntity {
-  START_ENERGY = 60;
+  private target: Herbivore | undefined;
 
   constructor(pos: Position) {
     super("Carnivore", pos);
-    this.energy = this.START_ENERGY;
+    this.energy = START_ENERGY_MAP["Carnivore"];
   }
 
-  computeNextMove(entities: IEntity[], nearbyGrid: IEntity[][]): void {
-    let closestHerbivore: Herbivore | undefined;
-    entities.forEach((element) => {
-      if (!(element instanceof Herbivore)) return;
-      if (
-        closestHerbivore === undefined ||
-        distance(this.pos, element.pos) <
-          distance(this.pos, closestHerbivore.pos)
-      )
-        closestHerbivore = element;
-    });
+  computeNextMove(entities: IEntity[], grid: IEntity[][]): void {
+    let closestHerbivore: Herbivore | undefined = findTypeInRadius(this.pos, grid, 25, "Herbivore") as Herbivore;
+    if (closestHerbivore !== undefined) {
+      this.target = closestHerbivore;
+    }
+    if (this.target !== undefined && !this.target.alive) {
+      this.target = undefined;
+    }
+    if (this.target === undefined) {
+      if (closestHerbivore === undefined) {
+        closestHerbivore = findAnyEntityOfType(entities, "Herbivore") as Herbivore;
+      }
+      if (closestHerbivore !== undefined) {
+        this.target = closestHerbivore;
+      }
+    }
     const change =
-      closestHerbivore != undefined
-        ? direction(this.pos, closestHerbivore.pos)
+      this.target !== undefined
+        ? direction(this.pos, this.target.pos)
         : { x: 0, y: 0 };
     const newPos = {
       x: this.pos.x + change.x,
       y: this.pos.y + change.y,
     };
-    if (!(nearbyGrid[change.x + 1][change.y + 1] instanceof Carnivore)) {
+    if (!(grid[newPos.x][newPos.y] instanceof Carnivore)) {
       this.pos = newPos;
     }
     this.energy -= 1;
@@ -51,5 +64,13 @@ export class Carnivore extends BaseEntity {
       default:
         return;
     }
+  }
+
+  multiply(grid: IEntity[][]): IEntity | undefined {
+    if (this.energy < REPRODUCTION_ENERGY["Carnivore"]) return;
+    const newPos = getRandomEmptySpaceNearPosition(grid, this.pos, 1);
+    if (newPos === undefined) return undefined;
+    this.energy = START_ENERGY_MAP["Carnivore"];
+    return new Carnivore(newPos);
   }
 }

@@ -1,6 +1,5 @@
 import {IEntity} from "./entities/entity"
-import {getNearbyGrid, getUniquePosition, Rectangle} from "./utils"
-import {Plant} from "./entities/plant";
+import {Rectangle} from "./utils"
 
 interface ISimulation {
     step: number
@@ -12,14 +11,10 @@ interface ISimulation {
 }
 
 export class Simulation implements ISimulation {
-    MAX_AGE = 100
-
     step: number
     grid: (IEntity | undefined)[][]
     bounds: Rectangle
     entities: IEntity[]
-    plantSpawnRate: number = 5
-    plantsToSpawn: number = 0
 
     constructor(step: number = 0, bounds: Rectangle = {minX: 0, minY: 0, maxX: 10, maxY: 10}, entities: IEntity[] = []) {
         this.step = step;
@@ -41,34 +36,29 @@ export class Simulation implements ISimulation {
             if (entity.alive === false)
                 return;
             this.grid[entity.pos.x][entity.pos.y] = undefined;
-            const nearbyGrid = getNearbyGrid(this.grid, entity.pos);
-            entity.computeNextMove(this.entities, nearbyGrid);
+            entity.computeNextMove(this.entities, this.grid);
             const encountered = this.grid[entity.pos.x][entity.pos.y];
             entity.interact(encountered);
             if (entity.alive)
                 this.grid[entity.pos.x][entity.pos.y] = entity;
         });
         this.entities.forEach(entity => {
-            if (entity.energy <= 0 || entity.age > this.MAX_AGE) {
+            if (entity.energy <= 0) {
                 entity.alive = false;
                 this.grid[entity.pos.x][entity.pos.y] = undefined;
             }
         })
         this.entities = this.entities.filter(entity => entity.alive);
-        this.plantsToSpawn += this.plantSpawnRate
-        if (this.plantsToSpawn >= 1) {
-            const n = Math.floor(this.plantSpawnRate);
-            this.plantsToSpawn -= n;
-            this.spawnPlants(n);
-        }
 
+        const newEntities: IEntity[] = [];
+        this.entities.forEach(entity => {
+            const newEntity = entity.multiply(this.grid);
+            if (newEntity !== undefined) {
+                newEntities.push(newEntity);
+                this.grid[newEntity.pos.x][newEntity.pos.y] = newEntity;
+            }
+        });
+        this.entities = this.entities.concat(newEntities);
     }
 
-    spawnPlants(n: number): void {
-        for (let i = 0; i < n; i++) {
-            const randPos = getUniquePosition(this.bounds, this.grid);
-            this.entities.push(new Plant(randPos));
-            this.grid[randPos.x][randPos.y] = this.entities[this.entities.length - 1];
-        }
-    }
 }

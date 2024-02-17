@@ -93,16 +93,72 @@ export function generateRandomEntities(bounds: Rectangle, plantsCount: number, h
     return entities;
 }
 
-export function getNearbyGrid(grid: IEntity[][], pos: Position): IEntity[][] {
-    return grid
-        .slice(
-            Math.max(0, pos.x - 1),
-            Math.min(grid.length, pos.x + 2)
-        )
-        .map(row =>
-            row.slice(
-                Math.max(0, pos.y - 1),
-                Math.min(row.length, pos.y + 2)
-            )
-        );
+export function getRandomEmptySpaceNearPosition(grid: (IEntity | undefined)[][], pos: Position, radius: number): Position | undefined {
+    let emptySpaces: Position[] = [];
+    for (let i = pos.x - radius; i <= pos.x + radius; i++) {
+        for (let j = pos.y - radius; j <= pos.y + radius; j++) {
+            if (i < 0 || j < 0 || i >= grid.length || j >= grid[0].length) {
+                continue;
+            }
+            if (grid[i][j] === undefined) {
+                emptySpaces.push({ x: i, y: j });
+            }
+        }
+    }
+    if (emptySpaces.length === 0) {
+        return undefined;
+    }
+    return emptySpaces[Math.floor(Math.random() * emptySpaces.length)];
+}
+
+export function findTypeInRadius(pos: Position, grid: IEntity[][], radius: number, type: string): IEntity | undefined {
+    let closest: IEntity | undefined;
+    function isValidPosition(x: number, y: number) {
+        return x >= 0 && x < grid.length && y >= 0 && y < grid[0].length;
+    }
+
+    for (let r = 1; r <= radius; r++) {
+        [r, -r].forEach(i => {
+            const x = pos.x + i;
+            for (let j = -r; j <= r; j++) {
+                let y = pos.y + j;
+                if (!isValidPosition(x, y))
+                    continue;
+                const entity = grid[x][y];
+                if (entity === undefined) continue;
+                if (entity.type === type) {
+                    closest = entity;
+                    break;
+                }
+            }
+        });
+        if (closest !== undefined) break;
+        [r, -r].forEach(j => {
+            const y = pos.y + j;
+            for (let i = -r; i <= r; i++) {
+                let x = pos.x + i;
+                if (!isValidPosition(x, y))
+                    continue;
+                const entity = grid[x][y];
+                if (entity === undefined) continue;
+                if (entity.type === type) {
+                    closest = entity;
+                    break;
+                }
+            }
+        });
+        if (closest !== undefined) break;
+    }
+    return closest;
+}
+
+export function findAnyEntityOfType(entities: IEntity[], type: string): IEntity | undefined {
+    const startIndex = Math.floor(Math.random() * entities.length);
+    const tries = 10;
+    for (let i = startIndex; i < Math.min(entities.length, startIndex + tries); i++) {
+        if (entities[i].type === type) {
+            return entities[i];
+        }
+    }
+    return undefined;
 }
