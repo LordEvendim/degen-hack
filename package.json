@@ -5,6 +5,9 @@
   "scripts": {
     "start": "tsx ./src/requestor.ts",
     "start:node": "node ./dist/requestor.js",
+    "generate": "yarn compile && yarn generate:images && yarn generate:gif",
+    "generate:images": "node ./dist/tasks/ecosystem-simulation/index.js",
+    "generate:gif": "node ./dist/tasks/ecosystem-simulation/gif.js",
     "compile": "tsc",
     "image:build": "docker build --progress=plain -t lordevendim/simgolem-simulation:latest .",
     "image:publish": "gvmkit-build --push lordevendim/simgolem-simulation:latest",
@@ -14,12 +17,16 @@
   "dependencies": {
     "@golem-sdk/golem-js": "^2.0.1",
     "commander": "^12.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "gif-encoder": "^0.7.2",
+    "png-js": "^1.0.0",
     "pureimage": "^0.4.13",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
     "@golem-sdk/gvmkit-build": "^0.3.12",
+    "@types/gif-encoder": "^0.7.4",
     "@types/node": "^20.11.19",
     "dotenv": "^16.4.4",
     "tsup": "^8.0.2"
