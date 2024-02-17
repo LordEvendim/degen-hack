@@ -1,5 +1,6 @@
-import { IEntity, Plant } from "./entity"
-import {Rectangle, findEntitiesAtPosition, getRandomPosition, getUniquePosition} from "./utils"
+import {IEntity} from "./entities/entity"
+import {getNearbyGrid, getUniquePosition, Rectangle} from "./utils"
+import {Plant} from "./entities/plant";
 
 interface ISimulation {
     step: number
@@ -17,7 +18,7 @@ export class Simulation implements ISimulation {
     grid: (IEntity | undefined)[][]
     bounds: Rectangle
     entities: IEntity[]
-    plantSpawnRate: number = 0.1
+    plantSpawnRate: number = 5
     plantsToSpawn: number = 0
 
     constructor(step: number = 0, bounds: Rectangle = {minX: 0, minY: 0, maxX: 10, maxY: 10}, entities: IEntity[] = []) {
@@ -40,8 +41,7 @@ export class Simulation implements ISimulation {
             if (entity.alive === false)
                 return;
             this.grid[entity.pos.x][entity.pos.y] = undefined;
-            const nearbyGrid = this.grid.slice(entity.pos.x - 1, entity.pos.x + 2).map(row => row.slice(entity.pos.y - 1, entity.pos.y + 2));
-            console.log(nearbyGrid)
+            const nearbyGrid = getNearbyGrid(this.grid, entity.pos);
             entity.computeNextMove(this.entities, nearbyGrid);
             const encountered = this.grid[entity.pos.x][entity.pos.y];
             entity.interact(encountered);

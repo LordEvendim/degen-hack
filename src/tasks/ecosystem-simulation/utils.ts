@@ -1,4 +1,7 @@
-import {Carnivore, Herbivore, IEntity, Plant} from "./entity"
+import {IEntity} from "./entities/entity";
+import {Plant} from "./entities/plant";
+import {Herbivore} from "./entities/herbivore";
+import {Carnivore} from "./entities/carnivore";
 
 export interface Rectangle {
     minX: number
@@ -88,4 +91,18 @@ export function generateRandomEntities(bounds: Rectangle, plantsCount: number, h
     }
 
     return entities;
+}
+
+export function getNearbyGrid(grid: IEntity[][], pos: Position): IEntity[][] {
+    return grid
+        .slice(
+            Math.max(0, pos.x - 1),
+            Math.min(grid.length, pos.x + 2)
+        )
+        .map(row =>
+            row.slice(
+                Math.max(0, pos.y - 1),
+                Math.min(row.length, pos.y + 2)
+            )
+        );
 }
