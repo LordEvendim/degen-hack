@@ -6,6 +6,9 @@ interface ISimulation {
     grid: (IEntity | undefined)[][]
     bounds: Rectangle
     entities: IEntity[]
+    plantsCount: number
+    herbivoresCount: number
+    carnivoresCount: number
 
     makeStep(): void
 }
@@ -15,12 +18,16 @@ export class Simulation implements ISimulation {
     grid: (IEntity | undefined)[][]
     bounds: Rectangle
     entities: IEntity[]
+    plantsCount: number
+    herbivoresCount: number
+    carnivoresCount: number
 
     constructor(step: number = 0, bounds: Rectangle = {minX: 0, minY: 0, maxX: 10, maxY: 10}, entities: IEntity[] = []) {
         this.step = step;
         this.bounds = bounds;
         this.entities = entities;
         this.populateGrid();
+        this.adjustPopulationCount();
     }
 
     populateGrid(): void {
@@ -28,6 +35,12 @@ export class Simulation implements ISimulation {
         this.entities.forEach(entity => {
             this.grid[entity.pos.x][entity.pos.y] = entity;
         });
+    }
+
+    adjustPopulationCount(): void {
+        this.plantsCount = this.entities.filter(entity => entity.type === "Plant").length;
+        this.herbivoresCount = this.entities.filter(entity => entity.type === "Herbivore").length;
+        this.carnivoresCount = this.entities.filter(entity => entity.type === "Carnivore").length;
     }
 
     makeStep(): void {
@@ -59,6 +72,7 @@ export class Simulation implements ISimulation {
             }
         });
         this.entities = this.entities.concat(newEntities);
+        this.adjustPopulationCount();
     }
 
 }

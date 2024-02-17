@@ -31,11 +31,14 @@ const runSimulation = async (steps: number) => {
     simulation.makeStep();
     console.log(`step ${simulation.step}`);
     await renderSimulationStep(simulation);
-    if (simulation.entities.length === 0) {
-      console.log("All entities are dead. Stopping simulation.");
+    const groupsAlive = ((simulation.plantsCount > 0) ? 1 : 0) +
+      ((simulation.herbivoresCount > 0) ? 1 : 0) + ((simulation.carnivoresCount > 0) ? 1 : 0);
+    if (groupsAlive <= 1) {
+      console.log("Only one group left, stopping simulation");
       break;
     }
   }
+  return simulation.step;
 };
 
 export const execute = async () => {
@@ -45,6 +48,6 @@ export const execute = async () => {
     fs.mkdirSync(dir, { recursive: true });
   }
 
-  await runSimulation(SIMULATION_STEPS);
-  await generateGif(`./out/`, "step", ".png", SIMULATION_STEPS);
+  const realSteps = await runSimulation(SIMULATION_STEPS);
+  await generateGif(`./out/`, "step", ".png", realSteps);
 };
