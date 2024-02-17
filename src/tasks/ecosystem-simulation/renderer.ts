@@ -17,7 +17,7 @@ export default async function renderSimulationStep(
   const step = simulation.step;
 
   simulation.entities.forEach((entity) => {
-    ctx.fillStyle = entityTypeToColor[entity.constructor.name];
+    ctx.fillStyle = entityTypeToColor[entity.type];
     ctx.fillRect(
       entity.pos.x * ENTITY_SIZE,
       entity.pos.y * ENTITY_SIZE,

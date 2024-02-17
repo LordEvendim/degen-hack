@@ -1,11 +1,14 @@
-import {Position} from "../utils"
+import { Position } from "../utils";
+
+export type EntityTypes = "Plant" | "Carnivore" | "Herbivore";
 
 export interface IEntity {
-    pos: Position
-    energy: number
-    age: number
-    alive: boolean
+  type: EntityTypes;
+  pos: Position;
+  energy: number;
+  age: number;
+  alive: boolean;
 
-    computeNextMove(entities: IEntity[], nearbyGrid: IEntity[][]): void
-    interact(entity: IEntity): void
+  computeNextMove(entities: IEntity[], nearbyGrid: IEntity[][]): void;
+  interact(entity: IEntity): void;
 }
