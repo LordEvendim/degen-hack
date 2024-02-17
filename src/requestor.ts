@@ -14,10 +14,10 @@ type MainOptions = {
 };
 
 program
-  .option("-n, --steps <number>", "simulations steps", "100")
-  .option("-ec, --entity-size <number>", "Size of an entity", "10")
-  .option("-fd, --frame-delay <number>", "Delay between frames", "100")
-  .option("-c, --tasks-count <number>", "tasks count", "3")
+  .option("-n, --steps <number>", "simulations steps", "10")
+  .option("-ec, --entity-size <number>", "Size of an entity", "5")
+  .option("-fd, --frame-delay <number>", "Delay between frames", "50")
+  .option("-c, --tasks-count <number>", "tasks count", "5")
   .option(
     "--subnet-tag <subnet>",
     "set subnet name, for example 'public'",
@@ -45,6 +45,7 @@ program
         level: "debug",
       }),
       taskTimeout: 30 * 60 * 1000,
+      activityExecuteTimeout: 30 * 60 * 1000,
     });
 
     const runningTasks: Promise<string | undefined>[] = [];
