@@ -5,7 +5,7 @@ import {
   IMAGE_WIDTH,
   SIMULATION_STEPS,
 } from "./constants";
-import renderSimulationStep, { createVideoFromImages } from "./renderer";
+import renderSimulationStep from "./renderer";
 import { generateRandomEntities } from "./utils";
 
 const bounds = {
@@ -18,9 +18,10 @@ const entities = generateRandomEntities(bounds, 100, 10, 5);
 
 const simulation = new Simulation(undefined, bounds, entities);
 
-for (let i = 0; i < SIMULATION_STEPS; ++i) {
-  simulation.makeStep();
-  console.log(`step ${simulation.step}`);
-  renderSimulationStep(simulation);
-}
-createVideoFromImages(5);
+export const execute = () => {
+  for (let i = 0; i < SIMULATION_STEPS; ++i) {
+    simulation.makeStep();
+    console.log(`step ${simulation.step}`);
+    renderSimulationStep(simulation);
+  }
+};

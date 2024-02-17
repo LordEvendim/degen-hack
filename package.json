@@ -11,8 +11,9 @@
     "compile": "tsc",
     "image:build": "docker build --progress=plain -t lordevendim/simgolem-simulation:latest .",
     "image:publish": "gvmkit-build --push lordevendim/simgolem-simulation:latest",
-    "build:tsup": "tsup src/requestor.ts",
-    "build": "yarn run compile && yarn run image:build && yarn run image:publish"
+    "build:executor": "tsup src/requestor.ts",
+    "build:task": "tsup src/task.ts",
+    "publish": "yarn run compile && yarn run image:build && yarn run image:publish"
   },
   "dependencies": {
     "@golem-sdk/golem-js": "^2.0.1",
