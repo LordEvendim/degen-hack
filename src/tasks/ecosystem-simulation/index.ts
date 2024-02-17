@@ -3,7 +3,7 @@ import {
   ENTITY_SIZE,
   IMAGE_HEIGHT,
   IMAGE_WIDTH,
-  SIMULATION_STEPS,
+  SIMULATION_STEPS, START_POPULATION,
 } from "./constants";
 import renderSimulationStep from "./renderer";
 import { generateRandomEntities } from "./utils";
@@ -16,7 +16,8 @@ const bounds = {
   maxX: IMAGE_WIDTH / ENTITY_SIZE,
   maxY: IMAGE_HEIGHT / ENTITY_SIZE,
 };
-const entities = generateRandomEntities(bounds, 30, 15, 10);
+const entities = generateRandomEntities(
+  bounds, START_POPULATION['Plant'], START_POPULATION['Herbivore'], START_POPULATION['Carnivore']);
 
 const simulation = new Simulation(undefined, bounds, entities);
 
