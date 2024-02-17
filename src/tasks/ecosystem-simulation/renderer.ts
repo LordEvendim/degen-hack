@@ -1,23 +1,46 @@
 import {Simulation} from "./simulation";
 import * as PImage from "pureimage";
 import fs from "fs";
-import {Plant} from "./entity";
+import {ENTITY_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH} from "./constants";
+
+const entityTypeToColor = {
+    Plant: 'green',
+    Herbivore: 'blue',
+    Carnivore: 'red'
+}
 
 export default function renderSimulationStep(simulation: Simulation): void {
 
-    const img = PImage.make(1920, 1080);
+    const img = PImage.make(IMAGE_WIDTH, IMAGE_HEIGHT);
     const ctx = img.getContext("2d");
+    const step = simulation.step;
 
     simulation.entities.forEach(entity => {
-        ctx.fillStyle = entity instanceof Plant ? "green" : "blue";
-        ctx.fillRect(entity.pos.x * 10, entity.pos.y * 10, 10, 10);
+        ctx.fillStyle = entityTypeToColor[entity.constructor.name];
+        ctx.fillRect(entity.pos.x * ENTITY_SIZE, entity.pos.y * ENTITY_SIZE, ENTITY_SIZE, ENTITY_SIZE);
     });
 
-    PImage.encodePNGToStream(img, fs.createWriteStream(`./out/step${simulation.step}.png`))
+    PImage.encodePNGToStream(img, fs.createWriteStream(`./out/step${step}.png`))
         .then(() => {
-            console.log(`rendered step${simulation.step}.png`);
+            console.log(`rendered step${step}.png`);
         })
         .catch((e) => {
             console.log(`there was an error writing ${e}`);
         });
+}
+
+const ffmpeg = require('fluent-ffmpeg');
+
+export function createVideoFromImages(fps) {
+    ffmpeg()
+        .addInput(`./out/%d.png`)
+        .on('end', () => {
+            console.log('Video created successfully!');
+        })
+        .on('error', (err) => {
+            console.error('Error:', err);
+        })
+        .inputFPS(fps)
+        .output('./animation.mp4')
+        .run();
 }
