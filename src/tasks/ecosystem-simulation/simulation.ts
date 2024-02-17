@@ -18,8 +18,8 @@ export class Simulation implements ISimulation {
     plantSpawnRate: number = 0.1
     plantsToSpawn: number = 0
 
-    constructor() {
-        this.setState(0, {minX: 0, minY: 0, maxX: 10, maxY: 10}, [])
+    constructor(step: number = 0, bounds: Rectangle = {minX: 0, minY: 0, maxX: 10, maxY: 10}, entities: IEntity[] = []) {
+        this.setState(step, bounds, entities);
     }
     
     setState(step?: number, bounds?: Rectangle, entities?: IEntity[]): void {
@@ -49,7 +49,7 @@ export class Simulation implements ISimulation {
         this.entities = this.entities.filter(entity => entity.alive);
         this.plantsToSpawn += this.plantSpawnRate
         if (this.plantsToSpawn >= 1) {
-            const n = this.plantSpawnRate / 1;
+            const n = Math.floor(this.plantSpawnRate);
             this.plantsToSpawn -= n;
             this.spawnPlants(n);
         }
