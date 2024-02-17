@@ -8,6 +8,7 @@ import {
 import renderSimulationStep from "./renderer";
 import { generateRandomEntities } from "./utils";
 import { generateGif } from "./gif";
+import fs from "fs";
 
 const bounds = {
   minX: 0,
@@ -32,6 +33,12 @@ const runSimulation = async (steps: number) => {
 };
 
 export const execute = async () => {
+  let dir = "./out/gif";
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
   await runSimulation(SIMULATION_STEPS);
   await generateGif(`./out/`, "step", ".png", SIMULATION_STEPS);
 };

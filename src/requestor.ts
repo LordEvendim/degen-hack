@@ -1,7 +1,7 @@
 import "./dotenv";
-import { TaskExecutor } from "@golem-sdk/golem-js";
+import { TaskExecutor, pinoLogger } from "@golem-sdk/golem-js";
 import { program } from "commander";
-import fs from "fs";
+import * as fs from "fs";
 
 type MainOptions = {
   subnetTag: string;
@@ -37,6 +37,10 @@ program
         driver: options.paymentDriver,
         network: options.paymentNetwork,
       },
+      logger: pinoLogger({
+        level: "debug",
+      }),
+      taskTimeout: 10 * 60 * 1000,
     });
 
     const runningTasks: Promise<string | undefined>[] = [];
@@ -47,6 +51,11 @@ program
             "/golem/work/task.js",
             // options.fibonacciNumber.toString(),
           ]);
+
+          ctx.downloadFile(
+            "/golem/work/out/gif/simulation.gif",
+            `./gen/simulation${i}.gif`
+          );
           console.log(result.stdout);
           fs.writeFileSync("./output.txt", result.stdout.toString().trim());
           return result.stdout?.toString().trim();
