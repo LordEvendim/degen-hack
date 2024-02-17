@@ -1,11 +1,3 @@
-const generateString = (n: number): string => {
-  let target = "";
+import { execute } from "./tasks/ecosystem-simulation";
 
-  for (let i = 0; i < n; i++) {
-    target += `${i} `;
-  }
-
-  return target;
-};
-
-console.log(generateString(10));
+execute();
