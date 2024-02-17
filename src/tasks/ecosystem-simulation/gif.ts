@@ -1,7 +1,6 @@
 import fs from "fs";
 import GifEncoder from "gif-encoder";
 import png from "png-js";
-import { SIMULATION_STEPS } from "./constants";
 
 const decodePNG = async (path: string): Promise<number[]> => {
   return await new Promise((resolve) => {
@@ -9,7 +8,7 @@ const decodePNG = async (path: string): Promise<number[]> => {
   });
 };
 
-const generateGif = async (
+export const generateGif = async (
   path: string,
   imageBaseName: string,
   extension: string,
@@ -36,5 +35,3 @@ const generateGif = async (
 
   gif.finish();
 };
-
-generateGif(`./out/`, "step", ".png", SIMULATION_STEPS);

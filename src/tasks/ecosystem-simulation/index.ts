@@ -7,6 +7,7 @@ import {
 } from "./constants";
 import renderSimulationStep from "./renderer";
 import { generateRandomEntities } from "./utils";
+import { generateGif } from "./gif";
 
 const bounds = {
   minX: 0,
@@ -18,10 +19,15 @@ const entities = generateRandomEntities(bounds, 100, 10, 5);
 
 const simulation = new Simulation(undefined, bounds, entities);
 
-export const execute = () => {
-  for (let i = 0; i < SIMULATION_STEPS; ++i) {
+const runSimulation = async (steps: number) => {
+  for (let i = 0; i < steps; ++i) {
     simulation.makeStep();
     console.log(`step ${simulation.step}`);
-    renderSimulationStep(simulation);
+    await renderSimulationStep(simulation);
   }
+};
+
+export const execute = async () => {
+  await runSimulation(SIMULATION_STEPS);
+  await generateGif(`./out/`, "step", ".png", SIMULATION_STEPS);
 };
