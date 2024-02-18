@@ -14,10 +14,10 @@ type MainOptions = {
 };
 
 program
-  .option("-n, --steps <number>", "simulations steps", "10")
+  .option("-n, --steps <number>", "simulations steps", "300")
   .option("-ec, --entity-size <number>", "Size of an entity", "5")
   .option("-fd, --frame-delay <number>", "Delay between frames", "50")
-  .option("-c, --tasks-count <number>", "tasks count", "5")
+  .option("-c, --tasks-count <number>", "tasks count", "20")
   .option(
     "--subnet-tag <subnet>",
     "set subnet name, for example 'public'",
@@ -46,6 +46,8 @@ program
       }),
       taskTimeout: 30 * 60 * 1000,
       activityExecuteTimeout: 30 * 60 * 1000,
+      maxParallelTasks: 20,
+      budget: 100,
     });
 
     const runningTasks: Promise<string | undefined>[] = [];
@@ -59,6 +61,7 @@ program
               options.steps.toString(),
               options.entitySize.toString(),
               options.frameDelay.toString(),
+              (i * 5 + 30).toString(),
             ])
             .downloadFile(
               "/golem/work/out/gif/simulation.gif",

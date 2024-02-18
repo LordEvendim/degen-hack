@@ -12,12 +12,12 @@ export const START_POPULATION = {
 
 export const START_ENERGY_MAP = {
   Plant: 20,
-  Herbivore: 50,
+  Herbivore: 100,
   Carnivore: 100,
 };
 
 export const REPRODUCTION_ENERGY = {
-  Plant: 40,
-  Herbivore: 80,
-  Carnivore: 120,
+  Plant: parseInt(process.argv[5] ?? "50"),
+  Herbivore: 140,
+  Carnivore: 150,
 };

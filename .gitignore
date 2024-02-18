@@ -19,6 +19,3 @@ dist
 
 .docker
 *.gvmi*
-
-out
-gen
