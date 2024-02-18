@@ -11,7 +11,8 @@
     "build:executor": "tsup src/requestor.ts",
     "build:task": "tsup src/task.ts",
     "golem:push": "yarn build:task && yarn run image:build && yarn run image:publish",
-    "generate": "yarn build:task && node ./dist/task.js"
+    "generate": "yarn build:task && node ./dist/task.js",
+    "test": "echo Hahahahahahahhahaha"
   },
   "dependencies": {
     "@golem-sdk/golem-js": "^2.0.1",
