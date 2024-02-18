@@ -11,7 +11,7 @@ const entityTypeToColor = {
 };
 
 let gif = new GifEncoder(1920, 1080, {
-  highWaterMark: 5 * 1024 * 1024, // 5MB
+  highWaterMark: 100 * 1024 * 1024, // 100MB
 });
 let file = fs.createWriteStream("./out/gif/simulation.gif");
 
