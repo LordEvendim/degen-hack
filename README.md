@@ -1,15 +1,4 @@
-# SimGolem - simulation
-
-## Running
-
-If you want to run simulation locally create following folder structure.
-
-### Getting started
-
-```js
--> out
-    -> gif;
-```
+# SimGolem
 
 ### Commands
 
